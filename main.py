@@ -79,9 +79,8 @@ def main():
             Label(win, text='Changing netsh https...').pack()
             if os.system(f'netsh winhttp set proxy proxy-server="https={proxy}"') == 0:
                 Label(win, text='Done. Enabling proxy...').pack()
-                os.startfile('enable.cmd')
                 try:
-                    os.startfile('enable.cmd')
+                    os.startfile(f'{sys._MEIPASS}\\enable.cmd')
                     time.sleep(1)
                 except:
                     err("Can't start connection file (files/enable.bat)")
