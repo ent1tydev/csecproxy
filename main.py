@@ -6,7 +6,7 @@ print(os.path.abspath("."))
 psv=['d']
 def probe():
     def step3():
-        paths=[f'{sys._MEIPASS}\\files\\', f'{sys._MEIPASS}\\files\\wp.png', f'{sys._MEIPASS}\\files\\icon.ico', f'{sys._MEIPASS}\\enable.cmd']
+        paths=[f'{sys._MEIPASS}\\files\\', f'{sys._MEIPASS}\\files\\wp.png', f'{sys._MEIPASS}\\files\\icon.ico', f'{sys._MEIPASS}\\files\\enable.vbs', f'{sys._MEIPASS}\\files\\disable.vbs']
         for i in paths:
             if os.path.exists(i):
                 pass
@@ -69,59 +69,52 @@ def main():
                     proxy=rs()
                     if not proxy == None:
                         break
-                print(proxy)
                 Label(win, text='Done.').pack()
                 Label(win, text=f'Current proxy server: {proxy}').pack()
             except Exception as E:
-                print(E)
                 err('error while getting proxy')
                 return
-            Label(win, text='Changing netsh https...').pack()
-            if os.system(f'netsh winhttp set proxy proxy-server="https={proxy}"') == 0:
-                Label(win, text='Done. Enabling proxy...').pack()
+            Label(win, text='Launching with script...').pack()
+            try:
+                os.startfile(f'{sys._MEIPASS}\\files\\enable.vbs')
+            except:
+                err("Can't start files/enable.vbs")
+                return
+            Label(win, text='Done. Checking connection...').pack()
+            try:
                 try:
-                    os.startfile(f'{sys._MEIPASS}\\enable.cmd')
-                    time.sleep(1)
+                    proxydomain, port=proxy.split(':')
                 except:
-                    err("Can't start connection file (files/enable.bat)")
+                    err('Unckown error')
                     return
-                enb=0
-                if enb== 0:
-                    Label(win, text='Done. Checking connection...').pack()
-                    try:
-                        time.sleep(1)
-                        try:
-                            proxydomain, port=proxy.split(':')
-                        except:
-                            err('Unckown error')
-                            return
-                        cpr = {'http': f'https://{proxy}'}
-                        cip=requests.get('http://ifconfig.ru', proxies=cpr).text.replace('\n', '')
-                        pname=socket.gethostbyname(proxydomain).replace('\n', '')
-                        if cip == pname:
-                            open(f'{sys._MEIPASS}\\files\\lock', 'w').close()
-                            Label(win, text='Connected!').pack()
-                            cbtn['state']=tk.NORMAL
-                            cbtn.config(text='DISCONNECT')
-                        else:
-                            Label(win, text='Hostname error').pack()
-                            cbtn['state']=tk.NORMAL
-                            cbtn.config(text='CONNECT')
-                            return
-                    except Exception as EE:
-                        err(f'Connection error')
-                        print(EE)
-                        return
+                cpr = {'http': f'https://{proxy}'}
+                cip=requests.get('http://ifconfig.ru', proxies=cpr).text.replace('\n', '')
+                pname=socket.gethostbyname(proxydomain).replace('\n', '')
+                if cip == pname:
+                    open(f'{sys._MEIPASS}\\files\\lock', 'w').close()
+                    Label(win, text='Connected!').pack()
+                    cbtn['state']=tk.NORMAL
+                    cbtn.config(text='DISCONNECT')
                 else:
-                    err("Can't turn proxy on")
+                    Label(win, text='Hostname error').pack()
+                    cbtn['state']=tk.NORMAL
+                    cbtn.config(text='CONNECT')
                     return
-            else:
-                err("Can't change system proxy server")
+            except Exception as EE:
+                err(f'Connection error')
+                print(EE)
                 return
         else:
-            os.remove(f'{sys._MEIPASS}\\files\\lock')
-            err('Disconnected')
-            return
+            cbtn['state']=tk.DISABLED
+            cbtn.config(text='DISABLING')
+            Label(win, text='Disabling...').pack()
+            try:
+                os.startfile(f'{sys._MEIPASS}\\files\\disable.vbs')
+                os.remove(f'{sys._MEIPASS}\\files\\lock')
+            except:
+                err('Error while disabling')
+                return
+            Label(win, text='Disconnected successfully!').pack()
 
     root = Tk()
     root.title('CSECProxy')
