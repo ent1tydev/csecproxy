@@ -3,7 +3,6 @@ from tkinter import *; from tkinter.ttk import *; import random, time, sys
 
 print(os.path.abspath("."))
 
-psv=['d']
 def probe():
     def step3():
         paths=[f'{sys._MEIPASS}\\files\\', f'{sys._MEIPASS}\\files\\wp.png', f'{sys._MEIPASS}\\files\\icon.ico', f'{sys._MEIPASS}\\files\\enable.vbs', f'{sys._MEIPASS}\\files\\disable.vbs']
