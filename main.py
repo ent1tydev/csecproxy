@@ -114,7 +114,7 @@ def main():
             except:
                 err('Error while disabling')
                 return
-            Label(win, text='Disconnected successfully!').pack()
+            err('Disconnected successfully!')
 
     root = Tk()
     root.title('CSECProxy')
