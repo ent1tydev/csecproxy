@@ -41,7 +41,7 @@ def main():
         win.title('Netbar')
         win.geometry('300x200')
         win.iconbitmap(f'{sys._MEIPASS}\\files\\icon.ico')
-        win.resizable(width=False, height=True)
+        win.resizable(width=False, height=False)
         def err(content):
             os.system('reg add "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0 /f')
             Label(win, text=content).pack()
@@ -56,24 +56,6 @@ def main():
             else:
                 err("netsh can't be launched")
                 return
-            try:
-                Label(win, text='Getiing proxy...').pack()
-                def rs():
-                    proxy_list=(requests.get('https://raw.githubusercontent.com/ent1tydev/hlscoin-repo/main/proxies.txt').text).split('\n')
-                    proxy=random.choice(proxy_list)
-                    if not proxy == '':
-                        return str(proxy)
-                    else:
-                        rs()
-                while True:
-                    proxy=rs()
-                    if not proxy == None:
-                        break
-                Label(win, text='Done.').pack()
-                Label(win, text=f'Current proxy server: {proxy}').pack()
-            except Exception as E:
-                err('error while getting proxy')
-                return
             Label(win, text='Launching with script...').pack()
             try:
                 os.startfile(f'{sys._MEIPASS}\\files\\enable.vbs')
@@ -81,6 +63,7 @@ def main():
                 err("Can't start files/enable.vbs")
                 return
             Label(win, text='Done. Checking connection...').pack()
+            proxy='proxy.crypton.ga:8443'
             try:
                 try:
                     proxydomain, port=proxy.split(':')
